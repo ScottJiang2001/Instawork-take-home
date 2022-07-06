@@ -8,6 +8,7 @@ import Button from "@mui/material/Button";
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import validator from "validator";
 
 export default function UserInput({ userInfo }) {
 	const [firstName, setFirstName] = useState(userInfo.first_name);
@@ -15,31 +16,67 @@ export default function UserInput({ userInfo }) {
 	const [email, setEmail] = useState(userInfo.user_email);
 	const [phone, setPhone] = useState(userInfo.user_phone);
 	const [role, setRole] = useState(userInfo.user_role);
+	const [firstNameError, setFirstNameError] = useState(false);
+	const [lastNameError, setLastNameError] = useState(false);
+	const [phoneError, setPhoneError] = useState(false);
+	const [emailError, setEmailError] = useState(false);
+	const [error, setError] = useState(false);
 
 	const navigate = useNavigate();
 
-	const handleSubmit = (userInfo) => {
-		const currentUserInfo = {
-			first_name: firstName,
-			last_name: lastName,
-			user_email: email,
-			user_phone: phone,
-			user_role: role,
-		};
-
-		if (userInfo.id) {
-			axios
-				.put(
-					`http://localhost:8000/api/team_management/${userInfo.id}/`,
-					currentUserInfo
-				)
-				.then((res) => navigate("/"))
-				.catch((err) => console.log(err));
+	const validateEmail = (email) => {
+		if (!validator.isEmail(email)) {
+			setEmailError(true);
 		} else {
+			setEmailError(false);
+		}
+	};
+
+	const handleSubmit = (userInfo) => {
+		setError(false);
+
+		if (!firstName) {
+			setFirstNameError(true);
+		}
+		if (!lastName) {
+			setLastNameError(true);
+		}
+		if (!phone) {
+			setPhoneError(true);
+		}
+		if (!email) {
+			setEmailError(true);
+		}
+
+		if (firstName && lastName && phone && !emailError) {
+			const currentUserInfo = {
+				first_name: firstName,
+				last_name: lastName,
+				user_email: email,
+				user_phone: phone,
+				user_role: role,
+			};
+
+			if (userInfo.id) {
+				axios
+					.put(
+						`http://localhost:8000/api/team_management/${userInfo.id}/`,
+						currentUserInfo
+					)
+					.then((res) => navigate("/"))
+					.catch((err) => console.log(err));
+				return;
+			}
 			axios
 				.post(`http://localhost:8000/api/team_management/`, currentUserInfo)
 				.then((res) => navigate("/"))
 				.catch((err) => console.log(err));
+		} else {
+			setError(true);
+
+			setTimeout(() => {
+				setError(false);
+			}, 2000);
 		}
 	};
 
@@ -52,69 +89,95 @@ export default function UserInput({ userInfo }) {
 
 	return (
 		<div className="user-input">
-			<h3> User Info </h3>
-			<TextField
-				id="outlined-basic"
-				label="First Name"
-				variant="outlined"
-				value={firstName}
-				onChange={(e) => setFirstName(e.target.value)}
-			/>
-			<TextField
-				id="outlined-basic"
-				label="Last Name"
-				variant="outlined"
-				value={lastName}
-				onChange={(e) => setLastName(e.target.value)}
-			/>
-			<TextField
-				id="outlined-basic"
-				label="Email"
-				variant="outlined"
-				value={email}
-				onChange={(e) => setEmail(e.target.value)}
-			/>
-			<TextField
-				id="outlined-basic"
-				label="Phone Number"
-				variant="outlined"
-				value={phone}
-				onChange={(e) => setPhone(e.target.value)}
-			/>
-			<h3> User Role </h3>
-			<FormControl>
-				<RadioGroup
-					aria-labelledby="demo-radio-buttons-group-label"
-					defaultValue={role}
-					name="radio-buttons-group"
-					onChange={(e) => setRole(e.target.value)}
-				>
-					<FormControlLabel
-						value="REG"
-						control={<Radio />}
-						label="Regular - Can't delete members"
-					/>
-					<FormControlLabel
-						value="ADM"
-						control={<Radio />}
-						label="Admin - Can delete members"
-					/>
-				</RadioGroup>
-			</FormControl>
-			<div className="buttons">
-				{userInfo.id && (
-					<Button
-						variant="outlined"
-						color="error"
-						onClick={() => handleDelete(userInfo.id)}
+			<form autoComplete="off">
+				<h3> User Info </h3>
+				<TextField
+					id="outlined-basic"
+					label="First Name"
+					variant="outlined"
+					value={firstName}
+					onChange={(e) => {
+						setFirstName(e.target.value);
+						setFirstNameError(false);
+					}}
+					required
+					error={firstNameError}
+				/>
+				<TextField
+					id="outlined-basic"
+					label="Last Name"
+					variant="outlined"
+					value={lastName}
+					onChange={(e) => {
+						setLastName(e.target.value);
+						setLastNameError(false);
+					}}
+					required
+					error={lastNameError}
+				/>
+				<TextField
+					id="outlined-basic"
+					label="Email"
+					variant="outlined"
+					value={email}
+					onChange={(e) => {
+						setEmail(e.target.value);
+						validateEmail(e.target.value);
+					}}
+					required
+					error={emailError}
+				/>
+				<span className="error">
+					{emailError && email.length > 0 && "Please enter a valid email"}
+				</span>
+				<TextField
+					id="outlined-basic"
+					label="Phone Number"
+					variant="outlined"
+					value={phone}
+					onChange={(e) => {
+						setPhone(e.target.value);
+						setPhoneError(false);
+					}}
+					required
+					error={phoneError}
+				/>
+				<h3> User Role </h3>
+				<FormControl>
+					<RadioGroup
+						aria-labelledby="demo-radio-buttons-group-label"
+						defaultValue={userInfo.id ? role : "REG"}
+						name="radio-buttons-group"
+						onChange={(e) => setRole(e.target.value)}
 					>
-						Delete
+						<FormControlLabel
+							value="REG"
+							control={<Radio />}
+							label="Regular - Can't delete members"
+						/>
+						<FormControlLabel
+							value="ADM"
+							control={<Radio />}
+							label="Admin - Can delete members"
+						/>
+					</RadioGroup>
+				</FormControl>
+				<div className="buttons">
+					{userInfo.id && (
+						<Button
+							variant="outlined"
+							color="error"
+							onClick={() => handleDelete(userInfo.id)}
+						>
+							Delete
+						</Button>
+					)}
+					<Button variant="contained" onClick={() => handleSubmit(userInfo)}>
+						Save
 					</Button>
-				)}
-				<Button variant="contained" onClick={() => handleSubmit(userInfo)}>
-					Save
-				</Button>
-			</div>
+				</div>
+			</form>
+			{error && <span> Ensure that all fields are filled and correct </span>}
 		</div>
 	);
 }

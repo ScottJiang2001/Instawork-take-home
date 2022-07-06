@@ -7,14 +7,26 @@
 		margin: 0;
 	}
 
-	.MuiTextField-root {
-		margin: 5px 0;
-	}
-
-	.buttons {
-        margin-top: 10px;
+	form {
 		display: flex;
-		flex-direction: row;
-        justify-content: space-between;
+		flex-direction: column;
+		align-content: center;
+		margin: auto;
+
+		.MuiTextField-root {
+			margin: 5px 0;
+		}
+
+		.error {
+			color: red;
+			font-size: 12px;
+		}
+
+		.buttons {
+			margin-top: 10px;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+		}
 	}
 }
