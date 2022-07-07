@@ -16,12 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
+from rest_framework.urlpatterns import format_suffix_patterns
 from team_management import views
 
-router = routers.DefaultRouter()
-router.register(r'team_management', views.MemberView, 'team_management')
+# router = routers.DefaultRouter()
+# router.register(r'team_management', views.MemberView, 'team_management')
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
+    path('members/', views.MemberList.as_view()),
+    path('member/<int:pk>/', views.MemberDetail.as_view()),
 ]
+
+urlpatterns = format_suffix_patterns(urlpatterns)

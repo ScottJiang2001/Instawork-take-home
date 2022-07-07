@@ -60,7 +60,7 @@ export default function UserInput({ userInfo }) {
 			if (userInfo.id) {
 				axios
 					.put(
-						`http://localhost:8000/api/team_management/${userInfo.id}/`,
+						`http://localhost:8000/member/${userInfo.id}/`,
 						currentUserInfo
 					)
 					.then((res) => navigate("/"))
@@ -68,7 +68,7 @@ export default function UserInput({ userInfo }) {
 				return;
 			}
 			axios
-				.post(`http://localhost:8000/api/team_management/`, currentUserInfo)
+				.post(`http://localhost:8000/members/`, currentUserInfo)
 				.then((res) => navigate("/"))
 				.catch((err) => console.log(err));
 		} else {
@@ -82,7 +82,7 @@ export default function UserInput({ userInfo }) {
 
 	const handleDelete = (userId) => {
 		axios
-			.delete(`http://localhost:8000/api/team_management/${userId}/`)
+			.delete(`http://localhost:8000/member/${userId}/`)
 			.then((res) => navigate("/"))
 			.catch((err) => console.log(err));
 	};

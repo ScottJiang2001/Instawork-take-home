@@ -12,7 +12,7 @@ function App() {
 
 	useEffect(() => {
 		axios
-			.get("http://localhost:8000/api/team_management/")
+			.get("http://localhost:8000/members/")
 			.then((res) => {
 				console.log(res.data);
 				setMembers(res.data);
