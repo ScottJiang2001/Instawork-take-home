@@ -8,7 +8,6 @@ from rest_framework import status
 from .serializers import MemberSerializer
 from .models import Member
 
-# Create your views here.
 
 class MemberList(APIView):
 
@@ -16,15 +15,15 @@ class MemberList(APIView):
         members = Member.objects.all()
         serializer = MemberSerializer(members, many=True)
         return Response(serializer.data)
-    
+
     def post(self, request, format=None):
         serializer = MemberSerializer(data=request.data)
         print(request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class MemberDetail(APIView):
 
@@ -46,4 +45,3 @@ class MemberDetail(APIView):
         member = self.get_member(pk)
         member.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-

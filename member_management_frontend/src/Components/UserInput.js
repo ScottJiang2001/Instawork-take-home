@@ -5,24 +5,42 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import validator from "validator";
+import { keys } from "@mui/system";
 
 export default function UserInput({ userInfo }) {
 	const [firstName, setFirstName] = useState(userInfo.first_name);
 	const [lastName, setLastName] = useState(userInfo.last_name);
 	const [email, setEmail] = useState(userInfo.user_email);
 	const [phone, setPhone] = useState(userInfo.user_phone);
-	const [role, setRole] = useState(userInfo.user_role);
+	const [role, setRole] = useState(userInfo.id ? userInfo.user_role : "REG");
 	const [firstNameError, setFirstNameError] = useState(false);
 	const [lastNameError, setLastNameError] = useState(false);
 	const [phoneError, setPhoneError] = useState(false);
 	const [emailError, setEmailError] = useState(false);
-	const [error, setError] = useState(false);
+	const [fieldError, setError] = useState(false);
+	const [serverError, setServerError] = useState({});
+	const [errorArray, setErrorArray] = useState([]);
 
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		handleServerError();
+	}, [serverError]);
+
+	const handleServerError = () => {
+		let tempArray = [];
+
+		for (const key in serverError) {
+			console.log(serverError[key][0]);
+			tempArray.push(serverError[key][0]);
+		}
+
+		setErrorArray(tempArray);
+	};
 
 	const validateEmail = (email) => {
 		if (!validator.isEmail(email)) {
@@ -59,10 +77,7 @@ export default function UserInput({ userInfo }) {
 
 			if (userInfo.id) {
 				axios
-					.put(
-						`http://localhost:8000/member/${userInfo.id}/`,
-						currentUserInfo
-					)
+					.put(`http://localhost:8000/member/${userInfo.id}/`, currentUserInfo)
 					.then((res) => navigate("/"))
 					.catch((err) => console.log(err));
 				return;
@@ -70,7 +85,10 @@ export default function UserInput({ userInfo }) {
 			axios
 				.post(`http://localhost:8000/members/`, currentUserInfo)
 				.then((res) => navigate("/"))
-				.catch((err) => console.log(err));
+				.catch((err) => {
+					console.log(err.response.data.user_email);
+					setServerError(err.response.data);
+				});
 		} else {
 			setError(true);
 
@@ -146,7 +164,7 @@ export default function UserInput({ userInfo }) {
 				<FormControl>
 					<RadioGroup
 						aria-labelledby="demo-radio-buttons-group-label"
-						defaultValue={userInfo.id ? role : "REG"}
+						defaultValue={role}
 						name="radio-buttons-group"
 						onChange={(e) => setRole(e.target.value)}
 					>
@@ -177,7 +195,19 @@ export default function UserInput({ userInfo }) {
 					</Button>
 				</div>
 			</form>
-			{error && <span> Ensure that all fields are filled and correct </span>}
+			<div className="error-messages">
+				{fieldError && (
+					<span> Ensure that all fields are filled and correct </span>
+				)}
+				<div>
+					{errorArray.map((error, index) => (
+						<span>
+							{" "}
+							{index + 1}.{error}{" "}
+						</span>
+					))}
+				</div>
+			</div>
 		</div>
 	);
 }

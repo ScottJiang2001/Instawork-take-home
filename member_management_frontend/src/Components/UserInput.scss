@@ -29,4 +29,12 @@
 			justify-content: space-between;
 		}
 	}
+
+	.error-messages {
+		margin: 15px;
+		color: red;
+		span {
+			display: block;
+		}
+	}
 }

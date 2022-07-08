@@ -17,9 +17,9 @@
 		.header-description {
 			margin-right: 30px;
 
-      span {
-        color: grey;
-      }
+			span {
+				color: grey;
+			}
 		}
 
 		.header-add {
@@ -27,32 +27,34 @@
 		}
 	}
 
-	.user-card {
-		display: flex;
-		flex-direction: row;
-		border: 1px solid #1479ce;
-		margin: 5px;
-		padding: 10px;
-		cursor: pointer;
-		border-radius: 10px;
-
-		&:hover {
-			background-color: #d5d1d1;
-		}
-
-		.user-avatar {
-			background-image: url("./user-avatar.svg");
-			background-repeat: no-repeat;
-			width: 50px;
-			height: 50px;
-			margin: auto 5px;
-		}
-
-		.user-info {
+	.user-list {
+		.user-card {
 			display: flex;
-			flex-direction: column;
-			margin-left: 10px;
-			width: 230px;
+			flex-direction: row;
+			border: 1px solid #1479ce;
+			margin: 5px;
+			padding: 10px;
+			cursor: pointer;
+			border-radius: 10px;
+
+			&:hover {
+				background-color: #d5d1d1;
+			}
+
+			.user-avatar {
+				background-image: url("./user-avatar.svg");
+				background-repeat: no-repeat;
+				width: 50px;
+				height: 50px;
+				margin: auto 5px;
+			}
+
+			.user-info {
+				display: flex;
+				flex-direction: column;
+				margin-left: 10px;
+				width: 230px;
+			}
 		}
 	}
 
