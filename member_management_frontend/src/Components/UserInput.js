@@ -9,7 +9,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import validator from "validator";
-import { keys } from "@mui/system";
 
 export default function UserInput({ userInfo }) {
 	const [firstName, setFirstName] = useState(userInfo.first_name);
@@ -29,6 +28,7 @@ export default function UserInput({ userInfo }) {
 
 	useEffect(() => {
 		handleServerError();
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [serverError]);
 
 	const handleServerError = () => {
