@@ -28,7 +28,6 @@ export default function UserInput({ userInfo }) {
 
 	useEffect(() => {
 		handleServerError();
-	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [serverError]);
 
 	const handleServerError = () => {
@@ -79,14 +78,17 @@ export default function UserInput({ userInfo }) {
 				axios
 					.put(`http://localhost:8000/member/${userInfo.id}/`, currentUserInfo)
 					.then((res) => navigate("/"))
-					.catch((err) => console.log(err));
+					.catch((err) => {
+						console.log(err);
+						setServerError(err.response.data);
+					});
 				return;
 			}
 			axios
 				.post(`http://localhost:8000/members/`, currentUserInfo)
 				.then((res) => navigate("/"))
 				.catch((err) => {
-					console.log(err.response.data.user_email);
+					console.log(err);
 					setServerError(err.response.data);
 				});
 		} else {

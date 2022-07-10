@@ -1,8 +1,6 @@
 from django.http import Http404
 from django.shortcuts import render
-from rest_framework import viewsets
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import MemberSerializer
@@ -12,13 +10,16 @@ from .models import Member
 class MemberList(APIView):
 
     def get(self, request):
-        members = Member.objects.all()
+        sort_param = self.request.query_params.get('sort_param')
+        try:
+            members = Member.objects.order_by(sort_param)
+        except:
+            members = Member.objects.all()
         serializer = MemberSerializer(members, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
         serializer = MemberSerializer(data=request.data)
-        print(request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

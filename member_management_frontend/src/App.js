@@ -5,22 +5,31 @@ import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import UserCard from "./Components/UserCard";
+import Box from "@mui/material/Box";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import NativeSelect from "@mui/material/NativeSelect";
 
 function App() {
 	const [members, setMembers] = useState([]);
+	const [sort, setSort] = useState("created_at");
+	const [order, setOrder] = useState("")
+
 	let navigate = useNavigate();
 
 	useEffect(() => {
 		axios
-			.get("http://localhost:8000/members/")
+			.get(`http://localhost:8000/members/?sort_param=${order}${sort}`)
 			.then((res) => {
-				console.log(res.data);
+				console.log(res);
 				setMembers(res.data);
 			})
 			.catch((err) => {
 				console.log(err);
 			});
-	}, []);
+	}, [sort, order]);
 
 	const handleAddNavigate = () => {
 		const userData = {
@@ -54,6 +63,31 @@ function App() {
 						Add
 					</Button>
 				</div>
+			</div>
+			<div className="sort-box">
+				<span> Sort By </span>
+				<Box sx={{ minWidth: 100 }}>
+					<FormControl fullWidth>
+						<NativeSelect
+						    value={sort}
+							onChange={(e) => setSort(e.target.value)}
+						>
+							<option value={"created_at"}>Created at</option>
+							<option value={"last_name"}>Last name</option>
+						</NativeSelect>
+					</FormControl>
+				</Box>
+				<Box sx={{ minWidth: 130 }}>
+					<FormControl fullWidth>
+						<NativeSelect
+						    value={order}
+							onChange={(e) => setOrder(e.target.value)}
+						>
+							<option value={"-"}>Descending</option>
+							<option value={""}>Ascending</option>
+						</NativeSelect>
+					</FormControl>
+				</Box>
 			</div>
 			{members.length > 0 ? (
 				<div className="user-list">

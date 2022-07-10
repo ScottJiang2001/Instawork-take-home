@@ -27,7 +27,22 @@
 		}
 	}
 
+	.sort-box {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-around;
+
+		span {
+			margin: auto 20px;
+		}
+
+		.MuiNativeSelect {
+			margin-right: 30px;
+		}
+	}
+
 	.user-list {
+		margin-top: 20px;
 		.user-card {
 			display: flex;
 			flex-direction: row;
