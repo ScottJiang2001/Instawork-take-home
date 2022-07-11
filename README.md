@@ -3,6 +3,8 @@
 ## App Description
 A simple team-member management application and consists of 3 pages that allow the user to view, edit, add, and delete team members. Additionally, on the view page, the user can sort team members by their creation date or last name.
 
+Estimated time spent: **~8 hours**
+
 ## Built With
 Django - React - React Router - Material UI
 
