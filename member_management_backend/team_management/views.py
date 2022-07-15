@@ -5,9 +5,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import MemberSerializer
 from .models import Member
+from rest_framework import generics
 
-
-class MemberList(APIView):
+class MemberList(generics.ListCreateAPIView):
 
     def get(self, request):
         sort_param = self.request.query_params.get('sort_param')
@@ -18,31 +18,8 @@ class MemberList(APIView):
         serializer = MemberSerializer(members, many=True)
         return Response(serializer.data)
 
-    def post(self, request, format=None):
-        serializer = MemberSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    serializer_class = MemberSerializer
 
-
-class MemberDetail(APIView):
-
-    def get_member(self, pk):
-        try:
-            return Member.objects.get(pk=pk)
-        except:
-            raise Http404
-
-    def put(self, request, pk, format=None):
-        member = self.get_member(pk)
-        serializer = MemberSerializer(member, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        member = self.get_member(pk)
-        member.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+class MemberDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Member.objects.all()
+    serializer_class = MemberSerializer

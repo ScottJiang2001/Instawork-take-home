@@ -3,6 +3,12 @@
 ## App Description
 A simple team-member management application and consists of 3 pages that allow the user to view, edit, add, and delete team members. Additionally, on the view page, the user can sort team members by their creation date or last name.
 
+<p float="left" align="middle">
+  <img src="images/list_view.png" width="200" >
+  <img src="images/add_view.png" width="170" /> 
+  <img src="images/edit_view.png" width="170" />
+</p>
+
 Estimated time spent: **~8 hours**
 
 ## Built With
